@@ -323,7 +323,7 @@
     <span class="badge">1 script</span>
   </div>
 
-  <p class="tag">A small bash script that toggles a Proxmox host between <strong>VFIO passthrough</strong> (GPU dedicated to a VM) and <strong>amdgpu mode</strong> (driver loaded so the GPU can be passed to LXCs for Ollama, Jellyfin, Frigate, and friends). Run on the fly via <code>curl</code>, or install to <code>/usr/local/sbin</code>.</p>
+  <p class="tag">A small bash script that toggles a Proxmox host between <strong>VFIO passthrough</strong> (GPU dedicated to a VM) and <strong>amdgpu mode</strong> (driver loaded so the GPU can be passed to LXCs for Ollama, Jellyfin, Frigate, and friends). Run on the fly via <code>curl</code>, or install to <code>/usr/local/sbin</code>. Designed to be run as root (Proxmox default), so the one-liners below skip <code>sudo</code>.</p>
 
   <div class="cats">
     <span><span class="dot"></span>Proxmox VE</span>
@@ -371,14 +371,14 @@
   <section class="section">
     <h2><svg><use href="#i-download"/></svg>Run / install</h2>
     <div class="tabs" role="tablist">
-      <button type="button" class="tab active" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh && sudo bash /tmp/vfio-toggle.sh">Interactive</button>
-      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --enable">Enable now</button>
-      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --disable">Disable now</button>
-      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --install">Install</button>
-      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --uninstall">Uninstall</button>
+      <button type="button" class="tab active" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh && bash /tmp/vfio-toggle.sh">Interactive</button>
+      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --enable">Enable now</button>
+      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --disable">Disable now</button>
+      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --install">Install</button>
+      <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --uninstall">Uninstall</button>
     </div>
     <div class="install">
-      <pre id="install-cmd"><span class="prompt">$</span><span id="install-text">curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh &amp;&amp; sudo bash /tmp/vfio-toggle.sh</span></pre>
+      <pre id="install-cmd"><span class="prompt">#</span><span id="install-text">curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh &amp;&amp; bash /tmp/vfio-toggle.sh</span></pre>
       <button type="button" class="copy" id="copy" aria-label="Copy command">
         <svg><use href="#i-copy"/></svg><span id="copy-label">Copy</span>
       </button>

@@ -10,10 +10,12 @@
 #   vfio-toggle.sh --uninstall    remove installed copy from /usr/local/sbin
 #   vfio-toggle.sh --help         this help
 #
-# Run-on-the-fly one-liners (no install needed):
-#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --enable
-#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --disable
-#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --install
+# Run-on-the-fly one-liners (no install needed). Run as root on the Proxmox
+# host. Default Proxmox installs are root and have no sudo, so these examples
+# omit it; prepend sudo if you log in as a normal user.
+#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --enable
+#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --disable
+#   curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --install
 #
 # Enable and disable rebuild initramfs and reboot after a 10 second countdown.
 

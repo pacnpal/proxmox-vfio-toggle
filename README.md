@@ -23,7 +23,7 @@ Should work on any AMD GPU once the PCI IDs in your existing modprobe configs ma
 
 ## Quick start
 
-Pick your flavor. All of these run as root on the Proxmox host.
+Run as root on the Proxmox host. Default Proxmox installs log you in as root and don't ship `sudo`, so the examples below skip it. If you're on a setup where you log in as a normal user, prepend `sudo` to each command.
 
 ### Run on the fly (no install)
 
@@ -31,37 +31,37 @@ Interactive menu:
 
 ```sh
 curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh \
-  && sudo bash /tmp/vfio-toggle.sh
+  && bash /tmp/vfio-toggle.sh
 ```
 
 Direct enable / disable:
 
 ```sh
-curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --enable
-curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --disable
+curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --enable
+curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --disable
 ```
 
 ### Install for repeated use
 
 ```sh
-curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --install
+curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --install
 ```
 
 This drops the script at `/usr/local/sbin/vfio-toggle.sh` and chmods it `0755`. After that:
 
 ```sh
-sudo vfio-toggle.sh                # interactive menu
-sudo vfio-toggle.sh --enable       # enable VFIO passthrough
-sudo vfio-toggle.sh --disable      # disable VFIO (load amdgpu)
-sudo vfio-toggle.sh --status       # print current mode (read-only)
+vfio-toggle.sh                # interactive menu
+vfio-toggle.sh --enable       # enable VFIO passthrough
+vfio-toggle.sh --disable      # disable VFIO (load amdgpu)
+vfio-toggle.sh --status       # print current mode (read-only)
 ```
 
 ### Uninstall
 
 ```sh
-curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | sudo bash -s -- --uninstall
+curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --uninstall
 # or, if you've installed it
-sudo vfio-toggle.sh --uninstall
+vfio-toggle.sh --uninstall
 ```
 
 ## What it does
