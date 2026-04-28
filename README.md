@@ -30,9 +30,10 @@ Run as root on the Proxmox host. Default Proxmox installs log you in as root and
 Interactive menu:
 
 ```sh
-curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh \
-  && bash /tmp/vfio-toggle.sh
+curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash
 ```
+
+The script reads from `/dev/tty`, so the menu works through a pipe.
 
 Direct enable / disable:
 

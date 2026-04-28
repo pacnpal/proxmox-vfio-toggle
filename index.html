@@ -371,14 +371,14 @@
   <section class="section">
     <h2><svg><use href="#i-download"/></svg>Run / install</h2>
     <div class="tabs" role="tablist">
-      <button type="button" class="tab active" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh && bash /tmp/vfio-toggle.sh">Interactive</button>
+      <button type="button" class="tab active" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash">Interactive</button>
       <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --enable">Enable now</button>
       <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --disable">Disable now</button>
       <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --install">Install</button>
       <button type="button" class="tab" data-cmd="curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --uninstall">Uninstall</button>
     </div>
     <div class="install">
-      <pre id="install-cmd"><span class="prompt">#</span><span id="install-text">curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh -o /tmp/vfio-toggle.sh &amp;&amp; bash /tmp/vfio-toggle.sh</span></pre>
+      <pre id="install-cmd"><span class="prompt">#</span><span id="install-text">curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash</span></pre>
       <button type="button" class="copy" id="copy" aria-label="Copy command">
         <svg><use href="#i-copy"/></svg><span id="copy-label">Copy</span>
       </button>

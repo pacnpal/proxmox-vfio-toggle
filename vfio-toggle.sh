@@ -227,8 +227,15 @@ interactive_menu() {
     echo "  q) Quit without changes"
     echo
 
+    # Read from the controlling terminal directly so this works when invoked
+    # via `curl ... | bash` (where stdin is the pipe carrying the script).
+    if [[ ! -r /dev/tty ]]; then
+        echo "no controlling terminal; pass --enable, --disable, --status, --install, or --uninstall directly." >&2
+        exit 1
+    fi
+
     local choice
-    read -rp "> " choice
+    read -rp "> " choice </dev/tty
     case "$choice" in
         1|e|E|enable)    do_enable ;;
         2|d|D|disable)   do_disable ;;
