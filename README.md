@@ -48,7 +48,12 @@ curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -
 curl -fsSL https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh | bash -s -- --install
 ```
 
-This drops the script at `/usr/local/sbin/vfio-toggle.sh` and chmods it `0755`. After that:
+This:
+
+- drops the script at `/usr/local/sbin/vfio-toggle.sh` (mode `0755`)
+- adds a managed block to `/etc/environment` ensuring `/usr/local/sbin` is on `PATH` for every login session, cron job, and systemd unit (skipped if it's already there)
+
+Open a new shell after install so the updated `PATH` takes effect, then:
 
 ```sh
 vfio-toggle.sh                # interactive menu
@@ -87,9 +92,9 @@ vfio-toggle.sh --uninstall
 
 `--status` reads those same files and prints `ENABLED`, `DISABLED`, or `UNKNOWN`. It does not write anything.
 
-`--install` copies the running script to `/usr/local/sbin/vfio-toggle.sh`. When invoked through `curl | bash` (so there is no on-disk source to copy from), it re-fetches the script from the Pages URL.
+`--install` copies the running script to `/usr/local/sbin/vfio-toggle.sh` and (if needed) appends a managed block to `/etc/environment` to put `/usr/local/sbin` on `PATH`. When invoked through `curl | bash` (so there is no on-disk source to copy from), it re-fetches the script from the Pages URL.
 
-`--uninstall` removes that copy.
+`--uninstall` removes the script and the managed `/etc/environment` block.
 
 ## Verification
 

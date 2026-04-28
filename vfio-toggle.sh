@@ -28,6 +28,13 @@ BLACKLIST=/etc/modprobe.d/blacklist.conf
 SELF_URL="https://pacnpal.github.io/proxmox-vfio-toggle/vfio-toggle.sh"
 INSTALL_PATH="/usr/local/sbin/vfio-toggle.sh"
 
+# Markers for the managed block we add to /etc/environment so the install
+# dir is on PATH for every login session, every cron job, every systemd
+# unit (i.e. anywhere PAM sources /etc/environment).
+ENV_FILE=/etc/environment
+ENV_BEGIN='# >>> proxmox-vfio-toggle >>>'
+ENV_END='# <<< proxmox-vfio-toggle <<<'
+
 print_help() {
     cat <<'EOF'
 vfio-toggle.sh - toggle Proxmox AMD GPU between VFIO passthrough and amdgpu modes.
@@ -134,6 +141,82 @@ self_source() {
     printf ''
 }
 
+# Read and return the value of the PATH= line in /etc/environment, with
+# surrounding quotes stripped. Empty if the file or the line is missing.
+env_path_value() {
+    [[ -f "$ENV_FILE" ]] || return 0
+    awk '
+        /^PATH=/ {
+            v = $0
+            sub(/^PATH=/, "", v)
+            gsub(/^"|"$/, "", v)
+            print v
+            exit
+        }
+    ' "$ENV_FILE"
+}
+
+env_has_sbin() {
+    local path
+    path=$(env_path_value)
+    case ":$path:" in
+        *":/usr/local/sbin:"*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+write_env_block() {
+    if [[ ! -f "$ENV_FILE" ]]; then
+        : > "$ENV_FILE"
+        chmod 0644 "$ENV_FILE"
+    fi
+    if grep -Fq "$ENV_BEGIN" "$ENV_FILE" 2>/dev/null; then
+        echo "[=] managed PATH block already present in $ENV_FILE"
+        return 0
+    fi
+    if env_has_sbin; then
+        echo "[=] /usr/local/sbin is already on PATH in $ENV_FILE; nothing to add"
+        return 0
+    fi
+
+    local current_path
+    current_path=$(env_path_value)
+    if [[ -z "$current_path" ]]; then
+        current_path="/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    fi
+
+    {
+        printf '\n%s\n' "$ENV_BEGIN"
+        printf '# managed by https://github.com/pacnpal/proxmox-vfio-toggle\n'
+        printf 'PATH="/usr/local/sbin:%s"\n' "$current_path"
+        printf '%s\n' "$ENV_END"
+    } >> "$ENV_FILE"
+    echo "[+] prepended /usr/local/sbin to PATH in $ENV_FILE"
+    echo "    (takes effect on the next login; pam_env reads /etc/environment at session start)"
+}
+
+remove_env_block() {
+    if [[ ! -f "$ENV_FILE" ]]; then
+        return 0
+    fi
+    if ! grep -Fq "$ENV_BEGIN" "$ENV_FILE" 2>/dev/null; then
+        echo "[=] no managed block found in $ENV_FILE"
+        return 0
+    fi
+    local tmp
+    tmp=$(mktemp "${TMPDIR:-/tmp}/vfio-toggle-env.XXXXXX")
+    awk -v b="$ENV_BEGIN" -v e="$ENV_END" '
+        $0 == b {skip=1; next}
+        skip && $0 == e {skip=0; next}
+        !skip {print}
+    ' "$ENV_FILE" > "$tmp"
+    # Drop a trailing blank line we may have created.
+    awk 'NR==FNR{n=NR;next} FNR==n && $0=="" {next} {print}' "$tmp" "$tmp" > "$tmp.2"
+    mv "$tmp.2" "$ENV_FILE"
+    rm -f "$tmp"
+    echo "[+] removed managed PATH block from $ENV_FILE"
+}
+
 do_install() {
     local target_dir
     target_dir=$(dirname "$INSTALL_PATH")
@@ -172,8 +255,11 @@ do_install() {
 
     install -m 0755 "$tmp" "$INSTALL_PATH"
     echo "[+] installed $INSTALL_PATH"
+
+    write_env_block
+
     echo
-    echo "Run as root:"
+    echo "Run as root (open a new shell so the updated PATH takes effect):"
     echo "  vfio-toggle.sh                  # interactive menu"
     echo "  vfio-toggle.sh --enable         # enable VFIO passthrough"
     echo "  vfio-toggle.sh --disable        # disable VFIO (load amdgpu)"
@@ -181,11 +267,20 @@ do_install() {
 }
 
 do_uninstall() {
+    local removed=0
     if [[ -f "$INSTALL_PATH" ]]; then
         rm -f "$INSTALL_PATH"
         echo "[+] removed $INSTALL_PATH"
+        removed=1
     else
-        echo "nothing to remove at $INSTALL_PATH"
+        echo "[=] nothing to remove at $INSTALL_PATH"
+    fi
+
+    remove_env_block
+
+    if [[ $removed -eq 1 ]]; then
+        echo
+        echo "Open a new shell to pick up the cleaned-up PATH."
     fi
 }
 
