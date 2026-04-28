@@ -19,13 +19,6 @@ echo "[+] re-blacklisting amdgpu..."
 sed -i 's|^#\s*blacklist amdgpu|blacklist amdgpu|' /etc/modprobe.d/blacklist.conf
 sed -i 's|^#\s*softdep amdgpu pre: vfio-pci|softdep amdgpu pre: vfio-pci|' /etc/modprobe.d/blacklist.conf
 
-echo "[+] stopping and removing GPU passthrough from CT 200 (if exists)..."
-if pct status 200 &>/dev/null; then
-    pct stop 200 2>/dev/null || true
-    pct set 200 --delete dev0 2>/dev/null || true
-    pct set 200 --delete dev1 2>/dev/null || true
-fi
-
 echo "[+] rebuilding initramfs..."
 update-initramfs -u
 

@@ -51,7 +51,6 @@ Both scripts reboot the host after a 10 second countdown. Press Ctrl+C during th
 - Renames `/etc/modprobe.d/vfio-off.conf.disabled` back to `vfio-off.conf`
 - Uncomments `blacklist amdgpu` in `/etc/modprobe.d/blacklist.conf`
 - Uncomments `softdep amdgpu pre: vfio-pci` in `/etc/modprobe.d/blacklist.conf`
-- Stops CT 200 and removes its `dev0` and `dev1` passthrough entries if the container exists
 - Runs `update-initramfs -u`
 - Reboots
 
@@ -75,10 +74,10 @@ Find your GPU PCI address with `lspci | grep VGA`. In VFIO mode you should see `
 
 ## Customization
 
-The scripts are tailored to one specific setup. If you want to use them, change the following:
+The scripts assume a working VFIO setup is already in place. To adapt them:
 
 - **PCI device IDs**: hardcoded inside your existing `/etc/modprobe.d/vfio.conf`. The scripts do not edit IDs, they just enable or disable that file. Make sure your `vfio.conf` has the right `options vfio-pci ids=...` for your card.
-- **CT ID 200**: `vfio-enable.sh` references container 200 to strip the GPU passthrough entries before reboot. Change `200` in the script to your LXC ID, or remove that block if you do not pass the GPU to any LXC.
+- **LXC GPU passthrough**: if you pass the GPU to a container, stop the container and remove its `dev*` entries before running `vfio-enable.sh`, since the GPU cannot be bound to vfio-pci while a container is holding it.
 
 ## Caveats
 
